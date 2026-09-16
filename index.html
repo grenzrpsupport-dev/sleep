@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Morgen-Dashboard Finn</title>
+  <style>
+    body { font-family: system-ui, sans-serif; background: #0f172a; color: #fff; padding: 20px; }
+    .card { background: #1e293b; padding: 15px; margin-bottom: 15px; border-radius: 8px; }
+    button { background: #38bdf8; color: #000; border: none; padding: 10px 15px; font-weight: bold; border-radius: 6px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h1>Guten Morgen, Finn! ☀️</h1>
+  <div class="card"><h2>⏰ Zeit</h2><p id="clock">--:--</p></div>
+  <div class="card"><h2>🌡️ Wetter</h2><p id="weather">Lade Wetter...</p></div>
+  <div class="card"><h2>📅 Untis Stundenplan</h2><p id="untis">Vertretungsplan wird geladen...</p></div>
+  <button onclick="playBriefing()">🎙️ Gemini Audio-Briefing abspielen</button>
+
+  <script>
+    // Live Uhrzeit
+    setInterval(() => document.getElementById('clock').innerText = new Date().toLocaleTimeString(), 1000);
+
+    // Wetter via Open-Meteo API (Beispielkoordinaten)
+    fetch('https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&current_weather=true')
+      .then(r => r.json()).then(d => {
+        document.getElementById('weather').innerText = `${d.current_weather.temperature}°C, Wind: ${d.current_weather.windspeed} km/h`;
+      });
+
+    // Gemini Text-to-Speech Briefing
+    async function playBriefing() {
+      const text = "Hallo Finn! Dein Wecker hat geklingelt. Das Wetter sieht gut aus und dein Tag kann starten!";
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "de-DE";
+      speechSynthesis.speak(utterance);
+    }
+  </script>
+</body>
+</html>
