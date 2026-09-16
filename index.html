@@ -3,32 +3,45 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>JARVIS // Morgen-Dashboard Finn</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+  <title>JARVIS // FINN OS v2.0</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --cyan: #00f3ff;
       --cyan-glow: rgba(0, 243, 255, 0.4);
-      --dark-bg: #050a14;
-      --card-bg: rgba(10, 20, 38, 0.7);
-      --border: rgba(0, 243, 255, 0.25);
+      --gold: #ffb700;
+      --bg: #030712;
+      --card-bg: rgba(15, 23, 42, 0.75);
+      --border: rgba(0, 243, 255, 0.2);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
     body {
-      background-color: var(--dark-bg);
+      background-color: var(--bg);
       background-image: 
-        radial-gradient(circle at 50% 20%, rgba(0, 243, 255, 0.08) 0%, transparent 60%),
+        radial-gradient(circle at 50% 30%, rgba(0, 243, 255, 0.1) 0%, transparent 70%),
         linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px),
         linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px);
-      background-size: 100% 100%, 40px 40px, 40px 40px;
-      color: #e2e8f0;
+      background-size: 100% 100%, 30px 30px, 30px 30px;
+      color: #f1f5f9;
       font-family: 'Rajdhani', sans-serif;
       min-height: 100vh;
-      padding: 2rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
+      padding: 1.5rem;
+      overflow-x: hidden;
+    }
+
+    /* Scanline Effekt */
+    body::after {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+      background-size: 100% 4px;
+      pointer-events: none;
+      z-index: 999;
     }
 
     /* Top HUD Header */
@@ -38,72 +51,123 @@
       align-items: center;
       border-bottom: 2px solid var(--cyan);
       padding-bottom: 1rem;
-      box-shadow: 0 4px 20px var(--cyan-glow);
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 25px var(--cyan-glow);
     }
 
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-    }
+    .brand { display: flex; align-items: center; gap: 15px; }
 
     .arc-reactor {
-      width: 40px;
-      height: 40px;
+      width: 45px;
+      height: 45px;
       border-radius: 50%;
       border: 3px solid var(--cyan);
-      box-shadow: 0 0 15px var(--cyan);
-      animation: pulse 2s infinite ease-in-out;
+      box-shadow: 0 0 20px var(--cyan), inset 0 0 15px var(--cyan);
+      animation: reactor-pulse 2s infinite ease-in-out;
     }
 
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); opacity: 0.8; }
-      50% { transform: scale(1.1); opacity: 1; box-shadow: 0 0 25px var(--cyan); }
+    @keyframes reactor-pulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 15px var(--cyan); }
+      50% { transform: scale(1.08); box-shadow: 0 0 30px var(--cyan), inset 0 0 20px var(--cyan); }
     }
 
     h1 {
       font-family: 'Orbitron', sans-serif;
       font-size: 1.8rem;
-      letter-spacing: 2px;
-      color: var(--cyan);
-      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: #fff;
       text-shadow: 0 0 10px var(--cyan);
     }
 
-    /* Grid System */
-    .dashboard-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 1.5rem;
-      flex-grow: 1;
+    /* Audio Visualizer Bars */
+    .visualizer {
+      display: flex;
+      gap: 4px;
+      height: 25px;
+      align-items: flex-end;
+    }
+    .bar {
+      width: 4px;
+      height: 5px;
+      background: var(--cyan);
+      border-radius: 2px;
+      transition: height 0.1s ease;
+    }
+    .speaking .bar {
+      animation: wave 0.5s infinite alternate ease-in-out;
+    }
+    .speaking .bar:nth-child(2) { animation-delay: 0.1s; }
+    .speaking .bar:nth-child(3) { animation-delay: 0.2s; }
+    .speaking .bar:nth-child(4) { animation-delay: 0.3s; }
+    .speaking .bar:nth-child(5) { animation-delay: 0.4s; }
+
+    @keyframes wave {
+      0% { height: 5px; }
+      100% { height: 25px; background: var(--gold); box-shadow: 0 0 10px var(--gold); }
     }
 
+    /* Big Start Protocol Button */
+    #start-btn {
+      width: 100%;
+      background: linear-gradient(90deg, rgba(0,243,255,0.2), rgba(0,102,255,0.4));
+      border: 2px solid var(--cyan);
+      color: #fff;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 900;
+      font-size: 1.3rem;
+      padding: 1.2rem;
+      border-radius: 12px;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      box-shadow: 0 0 25px var(--cyan-glow);
+      margin-bottom: 2rem;
+      transition: all 0.3s ease;
+    }
+
+    #start-btn:hover {
+      background: var(--cyan);
+      color: #000;
+      box-shadow: 0 0 40px var(--cyan);
+      transform: translateY(-2px);
+    }
+
+    /* Grid Layout */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 2rem;
+    }
+
+    /* Dynamic Active Cards (Swiping/Highlighting Animation) */
     .card {
       background: var(--card-bg);
       border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 1.5rem;
-      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 1.8rem;
+      backdrop-filter: blur(12px);
       position: relative;
-      overflow: hidden;
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      opacity: 0.6;
+      transform: scale(0.98);
     }
 
-    .card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; width: 4px; height: 100%;
-      background: var(--cyan);
-      box-shadow: 0 0 10px var(--cyan);
+    .card.active {
+      opacity: 1;
+      transform: scale(1.04);
+      border-color: var(--cyan);
+      box-shadow: 0 0 35px var(--cyan-glow), inset 0 0 15px rgba(0, 243, 255, 0.1);
+      z-index: 10;
     }
 
     .card h2 {
       font-family: 'Orbitron', sans-serif;
       font-size: 1.1rem;
-      color: #94a3b8;
+      color: var(--cyan);
       margin-bottom: 1rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
     .big-time {
@@ -114,41 +178,14 @@
       text-shadow: 0 0 20px var(--cyan-glow);
     }
 
-    .weather-temp {
-      font-size: 2.5rem;
-      font-weight: 700;
-      color: var(--cyan);
-    }
-
-    /* Start Overlay Button for Mobile Autoplay Restrictions */
-    #start-btn {
-      grid-column: 1 / -1;
-      background: linear-gradient(90deg, #00f3ff, #0066ff);
-      border: none;
-      color: #000;
-      font-family: 'Orbitron', sans-serif;
-      font-weight: 900;
-      font-size: 1.2rem;
-      padding: 1rem 2rem;
-      border-radius: 8px;
-      cursor: pointer;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      box-shadow: 0 0 20px var(--cyan);
-      transition: all 0.3s ease;
-    }
-
-    #start-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 0 35px var(--cyan);
-    }
+    .temp-val { font-size: 3rem; font-weight: 700; color: #fff; }
 
     .news-list { list-style: none; }
     .news-list li {
-      margin-bottom: 0.8rem;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-      padding-bottom: 0.4rem;
-      font-size: 0.95rem;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      font-size: 1rem;
+      color: #cbd5e1;
     }
   </style>
 </head>
@@ -157,109 +194,152 @@
   <header>
     <div class="brand">
       <div class="arc-reactor"></div>
-      <h1>J.A.R.V.I.S. // FINN OS</h1>
+      <div>
+        <h1>J.A.R.V.I.S.</h1>
+        <small style="color: var(--cyan); letter-spacing: 2px;">BENUTZER: FINN // ONLINE</small>
+      </div>
     </div>
-    <div id="date" style="font-family: 'Orbitron'; color: var(--cyan);">--.--.----</div>
+    
+    <div class="visualizer" id="visualizer">
+      <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+    </div>
   </header>
 
-  <button id="start-btn" onclick="initJarvis()">▶ PROTOKOLL STARTEN (JARVIS INITIALISIEREN)</button>
+  <button id="start-btn" onclick="startJarvisRoutine()">▶ MORGEN-PROTOKOLL STARTEN</button>
 
   <div class="dashboard-grid">
-    <!-- Uhrzeit -->
-    <div class="card">
-      <h2>⏰ Systemzeit</h2>
+    <!-- 1. ZEIT -->
+    <div class="card active" id="card-clock">
+      <h2>⏰ SYSTEM ZEIT</h2>
       <div class="big-time" id="clock">00:00:00</div>
+      <p id="date" style="color: var(--cyan); font-weight: bold; margin-top: 5px;">--.--.----</p>
     </div>
 
-    <!-- Wetter -->
-    <div class="card">
-      <h2>🌡️ Umwelt-Daten (Wetter)</h2>
-      <div class="weather-temp" id="temp">-- °C</div>
-      <p id="weather-desc">Lade Daten...</p>
+    <!-- 2. WETTER -->
+    <div class="card" id="card-weather">
+      <h2>🌡️ UMWELT-ANALYSE</h2>
+      <div class="temp-val" id="temp">-- °C</div>
+      <p id="weather-desc" style="color: #94a3b8; margin-top: 8px;">Lade Satellitendaten...</p>
     </div>
 
-    <!-- Live News -->
-    <div class="card">
-      <h2>📰 Top Schlagzeilen</h2>
+    <!-- 3. STUNDENPLAN (UNTIS) -->
+    <div class="card" id="card-untis">
+      <h2>📅 UNTIS TIMETABLE</h2>
+      <div id="untis-content" style="color: #cbd5e1;">
+        <p>🔄 Verbinde mit Cloudflare Worker...</p>
+      </div>
+    </div>
+
+    <!-- 4. NEWS -->
+    <div class="card" id="card-news">
+      <h2>📰 LIVE NEWSFEED</h2>
       <ul class="news-list" id="news">
-        <li>Lade Nachrichten-Feed...</li>
+        <li>Empfange Nachrichten...</li>
       </ul>
-    </div>
-
-    <!-- Untis Stundenplan / Vertretungsplan -->
-    <div class="card">
-      <h2>📅 Untis Planer</h2>
-      <p id="untis-info" style="color: #64748b;">(Status: Benötigt WebUntis API Worker - siehe Anleitung)</p>
     </div>
   </div>
 
   <script>
-    // 1. UHRZEIT & DATUM
+    // Live Uhrzeit
     function updateClock() {
       const now = new Date();
       document.getElementById('clock').innerText = now.toLocaleTimeString('de-DE');
-      document.getElementById('date').innerText = now.toLocaleDateString('de-DE', { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric' });
+      document.getElementById('date').innerText = now.toLocaleDateString('de-DE', { weekday: 'long', day: '2-digit', month: 'long' });
     }
     setInterval(updateClock, 1000);
     updateClock();
 
-    // 2. WETTER (Open-Meteo API - Kostenlos, kein API-Key)
-    async function getWeather() {
+    // Live Wetter (Stadt-Koordinaten nach Wunsch anpassbar)
+    async function fetchWeather() {
       try {
-        // Beispiel-Koordinaten für Deutschland / Karlsruhe - passe lat/lon an deine Stadt an
-        const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=49.0069&longitude=8.4037&current_weather=true');
+        const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&current_weather=true');
         const data = await res.json();
-        document.getElementById('temp').innerText = `${data.current_weather.temperature} °C`;
-        document.getElementById('weather-desc').innerText = `Windgeschwindigkeit: ${data.current_weather.windspeed} km/h`;
-      } catch (e) {
-        document.getElementById('weather-desc').innerText = "Wetterdaten nicht erreichbar";
-      }
+        document.getElementById('temp').innerText = `${Math.round(data.current_weather.temperature)}°C`;
+        document.getElementById('weather-desc').innerText = `Wind: ${data.current_weather.windspeed} km/h | Wettercode: ${data.current_weather.weathercode}`;
+      } catch(e) { document.getElementById('weather-desc').innerText = "Wetter offline"; }
     }
-    getWeather();
+    fetchWeather();
 
-    // 3. NEWS (Tagesschau RSS via API Feed)
-    async function getNews() {
+    // Live News
+    async function fetchNews() {
       try {
         const res = await fetch('https://api.rss2json.com/v1/api.json?rss_url=https://www.tagesschau.de/infoservices/alle-meldungen~rss2.xml');
         const data = await res.json();
-        const newsContainer = document.getElementById('news');
-        newsContainer.innerHTML = '';
-        
+        const newsEl = document.getElementById('news');
+        newsEl.innerHTML = '';
         data.items.slice(0, 3).forEach(item => {
-          const li = document.createElement('li');
-          li.innerText = item.title;
-          newsContainer.appendChild(li);
+          newsEl.innerHTML += `<li>• ${item.title}</li>`;
         });
+      } catch(e) {}
+    }
+    fetchNews();
+
+    // UNTIS API FETCH (Greift auf deinen Worker zu)
+    async function fetchUntis() {
+      const untisEl = document.getElementById('untis-content');
+      try {
+        // HIER SPÄTER DEINE WORKER-URL EINFÜGEN:
+        const WORKER_URL = "https://dein-untis-worker.workers.dev";
+        const res = await fetch(WORKER_URL);
+        const data = await res.json();
+        untisEl.innerHTML = `<p style="color:var(--cyan)"><b>Nächste Stunde:</b> ${data.nextLesson || 'Kein Vertretungsplan-Eintrag'}</p>`;
       } catch(e) {
-        document.getElementById('news').innerHTML = '<li>Fehler beim Laden der News.</li>';
+        untisEl.innerHTML = `<p style="color:#f43f5e">⚠️ Untis Worker noch nicht verbunden.</p><small>Siehe Anleitung unten!</small>`;
       }
     }
-    getNews();
+    fetchUntis();
 
-    // 4. JARVIS SPRACHAUSGABE
-    function initJarvis() {
-      const tempText = document.getElementById('temp').innerText;
-      
-      const briefText = `Guten Morgen, Finn. Das System ist betriebsbereit. Wir haben aktuell ${tempText}. Ich habe dir die neuesten Nachrichten auf dem Dashboard zusammengefasst. Einen erfolgreichen Tag, Finn.`;
+    // --- SYNCHRONISIERTE JARVIS ANIMATION & SPRACHE ---
+    function speakText(text) {
+      return new Promise((resolve) => {
+        const speech = new SpeechSynthesisUtterance(text);
+        speech.lang = 'de-DE';
+        speech.pitch = 0.8; // Tieferer Ton
+        speech.rate = 1.0;
 
-      const speech = new SpeechSynthesisUtterance(briefText);
-      speech.lang = 'de-DE';
-      speech.pitch = 0.85; // Tieferer, roboterhafterer Ton für JARVIS
-      speech.rate = 1.0;   // Normale Geschwindigkeit
+        const visualizer = document.getElementById('visualizer');
+        
+        speech.onstart = () => visualizer.classList.add('speaking');
+        speech.onend = () => {
+          visualizer.classList.remove('speaking');
+          resolve();
+        };
 
-      // Versuche eine tiefere/männlichere deutsche Stimme zu wählen
-      const voices = window.speechSynthesis.getVoices();
-      const germanVoice = voices.find(v => v.lang.includes('de') && (v.name.includes('Male') || v.name.includes('Google') || v.name.includes('Stefan')));
-      if (germanVoice) speech.voice = germanVoice;
-
-      window.speechSynthesis.speak(speech);
-
-      // Button ausblenden nach Start
-      document.getElementById('start-btn').style.display = 'none';
+        window.speechSynthesis.speak(speech);
+      });
     }
 
-    // Lädt Stimmen im Hintergrund
-    window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+    function highlightCard(id) {
+      document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+      const activeCard = document.getElementById(id);
+      activeCard.classList.add('active');
+      activeCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    async function startJarvisRoutine() {
+      document.getElementById('start-btn').style.display = 'none';
+
+      // Phase 1: Begrüßung & Uhrzeit
+      highlightCard('card-clock');
+      await speakText("Guten Morgen, Finn. JARVIS System ist online. Protokoll gestartet.");
+
+      // Phase 2: Fokus zum Wetter swipen
+      highlightCard('card-weather');
+      const temp = document.getElementById('temp').innerText;
+      await speakText(`Sektor Umwelt-Analyse: Die Außentemperatur beträgt aktuell ${temp}.`);
+
+      // Phase 3: Fokus zu Untis swipen
+      highlightCard('card-untis');
+      await speakText("Ich überprüfe deinen Stundenplan und deine Untis Live-Daten für heute.");
+
+      // Phase 4: Fokus zu den News swipen
+      highlightCard('card-news');
+      await speakText("Hier sind die aktuellsten Schlagzeilen aus den Weltnachrichten.");
+
+      // Fertig: Übersichtsansicht
+      document.querySelectorAll('.card').forEach(c => c.classList.add('active'));
+      await speakText("Einweisung abgeschlossen. Ich wünsche dir einen erfolgreichen Tag, Finn.");
+    }
   </script>
 </body>
 </html>
